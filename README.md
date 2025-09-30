@@ -10,6 +10,9 @@
     e.g. `x`, `y`, `z`
  - Define lambda functions with `\x.x`
  - Define variables with `$var = \x.x`
+ - Application **MUST** be wrapped with aprenticies (`()`).
+   However, subsequent application can be wrapped in same aprenticies.
+    e.g. `\x.(xxxx)`
 
 ```
 <expr> ::= <variable>
@@ -31,7 +34,7 @@
 
 <abstraction> ::= "\" <identifier> "." <expr>
 
-<application> ::= <expr> <expr>
+<application> ::= "(" <expr> <expr>
 
 <arithmetic-expr> ::= <arith_op> <expr> <expr>
 
@@ -42,21 +45,4 @@
 
 ## IDEA
 
-lambda calculus numeral with binary or even floating point?
-
-abstraction 어떻게 처리하지?
-
-```
-diagram struct {
-    Variables []string
-}
-abstraction struct {
-    Variable string
-}
-```
-
-위처럼 하고, abstraction 처리 할때 내려오는 것 중에 match하면 말단 지우고 연결
-nil이면 이전에 이미 지워진 것
-
-
-위처럼 하면 나중에 animate가 걱정이긴 한데, 일단 해봐야지
+ - lambda calculus numeral with binary or even floating point?

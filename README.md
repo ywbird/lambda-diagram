@@ -1,4 +1,4 @@
-# Lambda Interpreter
+# Lambda Diagram
 
 original idea: <https://tromp.github.io/cl/diagrams.html>
 

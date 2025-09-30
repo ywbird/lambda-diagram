@@ -1,15 +1,18 @@
 # Lambda Interpreter
 
+original idea: <https://tromp.github.io/cl/diagrams.html>
+
 ```
-\x.(+ x 1)
+\f.\x.(f(f(fx)))
 ```
+
+![church numeral 3](./example.png)
 
 ## Syntax
 
  - Lambda variables must be a single characters.
     e.g. `x`, `y`, `z`
  - Define lambda functions with `\x.x`
- - Define variables with `$var = \x.x`
  - Application **MUST** be wrapped with aprenticies (`()`).
    However, subsequent application can be wrapped in same aprenticies.
     e.g. `\x.(xxxx)`

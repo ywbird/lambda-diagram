@@ -1,18 +1,21 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"golang.org/x/image/draw"
+	"image"
 	"image/png"
 	"log"
 	"os"
 	"strings"
-	"flag"
-	// "github.com/chzyer/readline"
 )
 
 func main() {
 	exprPtr := flag.String("expr", "\\x.x", "Expression")
 	outputPtr := flag.String("out", "diagram.png", "Output file")
+	scalePtr := flag.Int("scale", 10, "Output scale")
+	verbosePtr := flag.Bool("verbose", false, "Print AST")
 
 	flag.Parse()
 
@@ -23,7 +26,10 @@ func main() {
 	p := NewParser(t.Tokens)
 
 	expr := p.ParseExpr()
-	// fmt.Printf("AST:%s\n", stringifyAst(expr, 0))
+
+	if *verbosePtr {
+		fmt.Printf("AST:%s\n", stringifyAst(expr, 0))
+	}
 	//
 	// for _, err := range p.errors {
 	// 	fmt.Printf("%s: %d\n", err.message, err.position)
@@ -31,11 +37,16 @@ func main() {
 
 	diagram := GenDiagWrap(expr)
 
+	scaledSize := image.Rect(0, 0, diagram.Bounds().Dx()**scalePtr, diagram.Bounds().Dy()**scalePtr) // Example: halve the size
+	resizedImage := image.NewRGBA(scaledSize)
+
+	draw.NearestNeighbor.Scale(resizedImage, scaledSize, diagram, diagram.Bounds(), draw.Over, nil)
+
 	file, err := os.Create(*outputPtr)
 	if err != nil {
 		log.Fatalf("Failed creating image: %v", err)
 	}
-	png.Encode(file, diagram)
+	png.Encode(file, resizedImage)
 }
 
 func stringifyAst(ast AstLambdaExpr, indent int) string {

@@ -4,8 +4,6 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-
-	_ "github.com/google/uuid"
 )
 
 type ExprDiagram interface {

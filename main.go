@@ -6,52 +6,36 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"github.com/chzyer/readline"
+	"flag"
+	// "github.com/chzyer/readline"
 )
 
 func main() {
+	exprPtr := flag.String("expr", "\\x.x", "Expression")
+	outputPtr := flag.String("out", "diagram.png", "Output file")
 
-	rl, err := readline.New("> ")
+	flag.Parse()
+
+	t := NewTokenizer(*exprPtr)
+
+	t.Tokenize()
+
+	p := NewParser(t.Tokens)
+
+	expr := p.ParseExpr()
+	// fmt.Printf("AST:%s\n", stringifyAst(expr, 0))
+	//
+	// for _, err := range p.errors {
+	// 	fmt.Printf("%s: %d\n", err.message, err.position)
+	// }
+
+	diagram := GenDiagWrap(expr)
+
+	file, err := os.Create(*outputPtr)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed creating image: %v", err)
 	}
-	defer rl.Close()
-
-	for {
-		line, err := rl.Readline()
-		if err != nil { // io.EOF
-			break
-		}
-
-		t := NewTokenizer(line)
-
-		t.Tokenize()
-
-		p := NewParser(t.Tokens)
-
-		expr := p.ParseExpr()
-		fmt.Printf("AST:%s\n", stringifyAst(expr, 0))
-
-		for _, err := range p.errors {
-			fmt.Printf("%s: %d\n", err.message, err.position)
-		}
-
-		// var img image.Image
-		// switch e := expr.(type) {
-		// 	case AstApplication:
-		// 		img = 
-		// }
-		
-		diagram := GenDiagWrap(expr)
-
-		file, err := os.Create("diagram.png")
-		if err != nil {
-			log.Fatalf("Failed creating image: %v", err)
-		}
-		png.Encode(file, diagram)
-	}
-
+	png.Encode(file, diagram)
 }
 
 func stringifyAst(ast AstLambdaExpr, indent int) string {
